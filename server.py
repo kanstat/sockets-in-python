@@ -6,6 +6,7 @@ def check_mssgs_from_client(conn):
     while True:
         data_recv = conn.recv(1024).decode()
         if data_recv == "exit":
+            print("Exiting Server..!!")
             break
         print("CLIENT->",end="")
         print(data_recv)
@@ -30,6 +31,9 @@ else:
     
     
 while True:
-    to_send = input("YOU(Server)-> ")
-    conn.send(to_send.encode())
+    if conn:
+        to_send = input("YOU(Server)-> ")
+        conn.send(to_send.encode())
+    else:
+        print("NOT CONNECTED",end="\r")     
 

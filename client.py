@@ -17,6 +17,11 @@ if __name__ == "__main__":
     if c:
         recv_thread = threading.Thread(target=check_mssgs_from_server,args=(c,))
         recv_thread.start()
+        
     while True:
-        to_send = input("YOU->")
-        c.send(to_send.encode())
+        if c:
+            to_send = input("YOU->")
+            c.send(to_send.encode())
+        else:
+            print("NOT CONNECTED",end="\r")            
+        
