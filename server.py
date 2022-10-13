@@ -1,39 +1,39 @@
+# import socket module
 import socket
 import threading
 
-
-def check_mssgs_from_client(conn):
+# function to handle the received data from the client continuously
+def client_ne_kuch_bheja_kya(connected_client,nickname):
     while True:
-        data_recv = conn.recv(1024).decode()
-        if data_recv == "exit":
-            print("Exiting Server..!!")
+        try:
+            client_ka_bheja_hua_mssg = connected_client.recv(1024).decode()
+            print("\33[2K",end="")
+            # print("\r"+client_ka_bheja_hua_mssg+"\nSERVER:",end=" ")
+            print(f"\r{nickname}: {client_ka_bheja_hua_mssg}\nSERVER:",end=" ")
+        except:
             break
-        print("CLIENT->",end="")
-        print(data_recv)
-        
 
-
-host = "127.0.0.1"
-port = 7000
-
+# # creating a object of socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-s.bind((host,port))
+server_host = "127.0.0.1"
+server_port = 2005
+
+s.bind((server_host, server_port)) 
+
 s.listen()
-
+client_nickname = None
+print(f"SERVER is running at {server_host} on port {server_port}\n")
 conn, addr = s.accept()
-if conn:
-    conn.send("Welcome to my Server\n".encode())
-    st = threading.Thread(target=check_mssgs_from_client,args=(conn,))
-    st.start()
-else:
-    print("something went wrong while connect()")    
-    
-    
-while True:
-    if conn:
-        to_send = input("YOU(Server)-> ")
-        conn.send(to_send.encode())
-    else:
-        print("NOT CONNECTED",end="\r")     
+client_nickname = conn.recv(1024).decode()
+if client_nickname:
+    print(f"{client_nickname} has joined the server.")
+conn.send(f"Hello {client_nickname}, Welcome to the server\n".encode())
+conn.send("You can send your texts now...\n".encode())
+# Thread to handling receiving mssgs from client independently
+client_thread = threading.Thread(target=client_ne_kuch_bheja_kya, args=(conn,client_nickname))
+client_thread.start()
 
+while True:
+    d = input("\rSERVER: ")
+    conn.send(d.encode())
