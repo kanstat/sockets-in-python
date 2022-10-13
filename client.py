@@ -1,17 +1,24 @@
 import socket
+import threading
 
-host = "127.0.0.1"
-port = 5002
 
-# createing a socket object
+def check_mssgs_from_server(conn):
+    while True:
+        data_recv = conn.recv(1024).decode()
+        print("SERVER->", end="")
+        print(data_recv)
 
-c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-c.connect((host, port))
+if __name__ == "__main__":
+    server_host = "127.0.0.1"
+    server_port = 7000
 
-print("connected to server")
-
-to_send = input("type your msh here--->>")
-
-c.send(to_send.encode())
-# c.recv(1024).decode()
+    c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    c.connect((server_host, server_port))
+    if c:
+        recv_thread = threading.Thread(
+            target=check_mssgs_from_server, args=(c,))
+        recv_thread.start()
+    while True:
+        to_send = input("YOU->")
+        c.send(to_send.encode())
