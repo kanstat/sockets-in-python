@@ -36,4 +36,8 @@ client_thread.start()
 
 while True:
     d = input("\rSERVER: ")
-    conn.send(d.encode())
+    if d != "exit":
+        conn.send(d.encode())
+    else:
+        conn.close()
+        break
