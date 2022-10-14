@@ -31,5 +31,8 @@ server_thread.start()
 
 while True:
     mssg_to_send = input("\rCLIENT: ")
-    c.send(f"{mssg_to_send}".encode())
-
+    if mssg_to_send != "exit!!":
+        c.send(f"{mssg_to_send}".encode())
+    else:
+        c.close()
+        break

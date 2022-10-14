@@ -9,6 +9,9 @@ def client_ne_kuch_bheja_kya(connected_client,nickname):
             client_ka_bheja_hua_mssg = connected_client.recv(1024).decode()
             print("\33[2K",end="")
             # print("\r"+client_ka_bheja_hua_mssg+"\nSERVER:",end=" ")
+            if client_ka_bheja_hua_mssg == "exit!!":
+                print(f"{nickname} has closed the connection !!")
+                break
             print(f"\r{nickname}: {client_ka_bheja_hua_mssg}\nSERVER:",end=" ")
         except:
             break
@@ -36,8 +39,9 @@ client_thread.start()
 
 while True:
     d = input("\rSERVER: ")
-    if d != "exit":
+    if d != "exit!!" or not conn:
         conn.send(d.encode())
     else:
+        print("Closing the Server because of no client")
         conn.close()
         break
